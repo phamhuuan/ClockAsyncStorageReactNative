@@ -8,12 +8,12 @@
 
 1. All feature
 
-	1. Stopwatch
-	
-	- Start
-	- Stop
-	- Reset
-	- +Lap
+   1. Stopwatch
+
+      - Start
+      - Stop
+      - Reset
+      - +Lap
 
 1. Dependencies
 
