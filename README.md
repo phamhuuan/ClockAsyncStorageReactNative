@@ -1,4 +1,4 @@
-### Clock
+# Clock
 
 ## Table of contents
 
