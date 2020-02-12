@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
 
 function handlColor(index, total, opacity) {
 	if (index === total && index === 1) {
@@ -51,38 +52,26 @@ function handleTime(time) {
 }
 
 export default function StopWatch() {
-	const [time, setTime] = useState(0);
-	const [isStart, setIsStart] = useState(false);
-	const [reset, setReset] = useState(true);
-	const [lap, setLap] = useState([]);
+	const time = useSelector(state => state.stopWatchReducer.time);
+	const isStart = useSelector(state => state.stopWatchReducer.isStart);
+	const reset = useSelector(state => state.stopWatchReducer.reset);
+	const lap = useSelector(state => state.stopWatchReducer.lap);
+	const dispatch = useDispatch();
 	useEffect(() => {
 		let interval;
 		if (isStart) {
-			interval = setInterval(() => setTime(prev => prev + 1), 1000);
+			interval = setInterval(() => dispatch({type: 'TIMING'}), 1000);
 		}
 		return () => clearInterval(interval);
-	}, [isStart]);
+	}, [dispatch, isStart]);
 	function toggleStart() {
-		setReset(false);
-		setIsStart(!isStart);
+		isStart ? dispatch({type: 'STOP'}) : dispatch({type: 'START'});
 	}
 	function addLap() {
-		setLap([
-			...lap,
-			{
-				lap: lap.length + 1,
-				time: time,
-				color: 'rgb(0,255,0)',
-				index: 1,
-			},
-		]);
-		setTime(0);
+		dispatch({type: '+LAP'});
 	}
 	function resetTime() {
-		setTime(0);
-		setReset(true);
-		setIsStart(false);
-		setLap([]);
+		dispatch({type: 'RESET'});
 	}
 	function onResetOrAddLap() {
 		isStart ? addLap() : resetTime();
