@@ -1,4 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
+// without using async storage
 import React, {useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
@@ -19,7 +20,7 @@ function handlColor(index, total, opacity) {
 	}
 }
 
-function handleData(data) {
+function handleData(data, id) {
 	let tmp = data.sort((a, b) => {
 		if (a.time !== b.time) {
 			return a.time > b.time;
@@ -35,13 +36,20 @@ function handleData(data) {
 				index: i++,
 			}),
 	);
-	return (tmp = tmp.sort((a, b) => a.lap > b.lap));
+	switch (id) {
+		case 0:
+			return (tmp = tmp.sort((a, b) => a.lap > b.lap));
+		case 1:
+			return (tmp = tmp.sort((a, b) => a.time > b.time));
+		case 2:
+			return (tmp = tmp.sort((a, b) => a.time < b.time));
+	}
 }
 
 function handleTime(time) {
 	let seconds = time % 60;
 	let minutes = Math.floor(time / 60) % 60;
-	let hours = Math.floor(time / 360);
+	let hours = Math.floor(time / 3600);
 	return (
 		(hours < 10 ? '0' + hours : hours) +
 		':' +
@@ -56,6 +64,8 @@ export default function StopWatch() {
 	const isStart = useSelector(state => state.stopWatchReducer.isStart);
 	const reset = useSelector(state => state.stopWatchReducer.reset);
 	const lap = useSelector(state => state.stopWatchReducer.lap);
+	const id = useSelector(state => state.sortReducer.id);
+	const buttonName = useSelector(state => state.sortReducer.buttonName);
 	const dispatch = useDispatch();
 	useEffect(() => {
 		let interval;
@@ -64,20 +74,39 @@ export default function StopWatch() {
 		}
 		return () => clearInterval(interval);
 	}, [dispatch, isStart]);
-	function toggleStart() {
-		isStart ? dispatch({type: 'STOP'}) : dispatch({type: 'START'});
+	function onStart() {
+		dispatch({type: 'START'});
 	}
-	function addLap() {
-		dispatch({type: '+LAP'});
+	function onStop() {
+		dispatch({type: 'STOP'});
 	}
-	function resetTime() {
+	function onReset() {
 		dispatch({type: 'RESET'});
 	}
+	function onAddLap() {
+		dispatch({type: '+LAP'});
+	}
+	function onStartOrStop() {
+		isStart ? onStop() : onStart();
+	}
 	function onResetOrAddLap() {
-		isStart ? addLap() : resetTime();
+		isStart ? onAddLap() : onReset();
+	}
+	function onSortLap() {
+		dispatch({type: 'SORT_BY_LAP'});
+	}
+	function onSortTime() {
+		switch (buttonName) {
+			case 'Best to worst':
+				dispatch({type: 'SORT_BEST_TO_WORST'});
+				break;
+			case 'Worst to best':
+				dispatch({type: 'SORT_WORST_TO_BEST'});
+				break;
+		}
 	}
 	let stopWatch = handleTime(time);
-	let data = handleData(lap);
+	let data = handleData(lap, id);
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
@@ -108,24 +137,44 @@ export default function StopWatch() {
 				/>
 			</View>
 			<View style={styles.controlView}>
-				<View style={styles.buttonView}>
-					<TouchableOpacity
-						onPress={toggleStart}
-						style={[
-							styles.startButton,
-							{backgroundColor: isStart ? 'green' : 'red'},
-						]}>
-						<Text>{isStart ? 'Pause' : 'Start'}</Text>
-					</TouchableOpacity>
+				<View style={{flexDirection: 'row'}}>
+					<View style={styles.buttonView}>
+						<TouchableOpacity
+							onPress={onStartOrStop}
+							style={[
+								styles.startButton,
+								{backgroundColor: isStart ? 'green' : 'red'},
+							]}>
+							<Text>{isStart ? 'Pause' : 'Start'}</Text>
+						</TouchableOpacity>
+					</View>
+					<View style={{height: 50, width: 20}} />
+					<View style={styles.buttonView}>
+						<TouchableOpacity
+							onPress={onResetOrAddLap}
+							disabled={reset}
+							style={[styles.resetButton, {opacity: reset ? 0.2 : 1}]}>
+							<Text>{isStart ? '+Lap' : 'Reset'}</Text>
+						</TouchableOpacity>
+					</View>
 				</View>
-				<View style={{height: 50, width: 20}} />
-				<View style={styles.buttonView}>
-					<TouchableOpacity
-						onPress={onResetOrAddLap}
-						disabled={reset}
-						style={[styles.resetButton, {opacity: reset ? 0.2 : 1}]}>
-						<Text>{isStart ? '+Lap' : 'Reset'}</Text>
-					</TouchableOpacity>
+				<View style={{height: 20}} />
+				<View style={{flexDirection: 'row'}}>
+					<View style={styles.buttonView}>
+						<TouchableOpacity
+							onPress={onSortLap}
+							style={[styles.startButton, {backgroundColor: '#ff8500'}]}>
+							<Text>Sort by lap</Text>
+						</TouchableOpacity>
+					</View>
+					<View style={{height: 50, width: 20}} />
+					<View style={styles.buttonView}>
+						<TouchableOpacity
+							onPress={onSortTime}
+							style={[styles.resetButton, {backgroundColor: '#ff8500'}]}>
+							<Text>{buttonName}</Text>
+						</TouchableOpacity>
+					</View>
 				</View>
 			</View>
 		</View>
@@ -148,13 +197,13 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 	},
 	body: {
-		flex: 4,
+		flex: 2,
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
 	controlView: {
 		flex: 2,
-		flexDirection: 'row',
+		flexDirection: 'column',
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
@@ -164,7 +213,7 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 	},
 	result: {
-		height: 300,
+		height: 250,
 		width: 250,
 		alignSelf: 'center',
 	},

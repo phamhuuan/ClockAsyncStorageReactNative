@@ -1,4 +1,6 @@
-import {stopWatchReducer} from './StopWatchReducer';
+import {stopWatchReducer, sortReducer} from './StopWatchReducer';
 import {createStore, combineReducers} from 'redux';
 
-export const store = createStore(combineReducers({stopWatchReducer}));
+export const store = createStore(
+	combineReducers({stopWatchReducer, sortReducer}),
+);

@@ -3,6 +3,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import FontAwesome5Pro from 'react-native-vector-icons/FontAwesome5';
 import StopWatchScreen from './screens/StopWatchScreen';
+import AlarmScreen from './screens/AlarmScreen';
+import CountdownScreen from './screens/Countdown';
 
 const Tab = createBottomTabNavigator();
 export default function App() {
@@ -11,22 +13,31 @@ export default function App() {
 			<Tab.Navigator
 				screenOptions={({route}) => ({
 					tabBarIcon: ({focused}) => {
-						if (route.name === 'Bấm giờ') {
-							return (
-								<FontAwesome5Pro
-									name="stopwatch"
-									size={focused ? 30 : 20}
-									color={focused ? 'tomato' : 'gray'}
-								/>
-							);
-						} else if (route.name === 'Bấm giờ giớ bầm') {
-							return (
-								<FontAwesome5Pro
-									name="gift"
-									size={focused ? 30 : 20}
-									color={focused ? 'tomato' : 'gray'}
-								/>
-							);
+						switch (route.name) {
+							case 'Bấm giờ':
+								return (
+									<FontAwesome5Pro
+										name="stopwatch"
+										size={focused ? 30 : 20}
+										color={focused ? 'tomato' : 'gray'}
+									/>
+								);
+							case 'Báo thức':
+								return (
+									<FontAwesome5Pro
+										name="bell"
+										size={focused ? 30 : 20}
+										color={focused ? 'tomato' : 'gray'}
+									/>
+								);
+							case 'Hẹn giờ':
+								return (
+									<FontAwesome5Pro
+										name="clock"
+										size={focused ? 30 : 20}
+										color={focused ? 'tomato' : 'gray'}
+									/>
+								);
 						}
 					},
 				})}
@@ -39,7 +50,8 @@ export default function App() {
 					},
 				}}>
 				<Tab.Screen name="Bấm giờ" component={StopWatchScreen} />
-				{/* <Tab.Screen name="Bấm giờ giớ bầm" component={StopWatchScreen} /> */}
+				<Tab.Screen name="Báo thức" component={AlarmScreen} />
+				<Tab.Screen name="Hẹn giờ" component={CountdownScreen} />
 			</Tab.Navigator>
 		</NavigationContainer>
 	);
