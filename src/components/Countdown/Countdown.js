@@ -1,30 +1,12 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
+import {View, Text} from 'react-native';
 import styles from './styles';
 import Header from './Header';
-import {WheelPicker} from 'react-native-wheel-picker-android';
-import * as wheelState from './wheelState';
 import {handleTime} from './handle';
 import storage from '../../storage';
-
-function TimeWheel(props) {
-	return (
-		<WheelPicker
-			style={{width: 60}}
-			isCyclic={true}
-			selectedItemTextColor="#ff7800"
-			selectedItemTextSize={24}
-			itemTextColor="gray"
-			itemTextSize={16}
-			selectedItem={props.select}
-			data={props.data}
-			onItemSelected={props.onSelect}
-		/>
-	);
-}
+import TimePicker from './TimePicker';
+import Control from './Control';
 
 export default function Countdown() {
 	const [selectedHours, setSelectedHours] = useState(0);
@@ -124,6 +106,10 @@ export default function Countdown() {
 		async function handleOnCancel() {
 			await storage.set('start-countdown', JSON.stringify(false));
 			await storage.set('pause-countdown', JSON.stringify(false));
+			await storage.remove('time-left-countdown');
+			await storage.remove('time-expected-countdown');
+			setExpectedTime(null);
+			setTime(0);
 			setStart(false);
 			setPause(false);
 		}
@@ -170,67 +156,25 @@ export default function Countdown() {
 				</View>
 			) : (
 				<View style={styles.body}>
-					<View style={styles.timePicker}>
-						<TimeWheel
-							select={selectedHours}
-							data={wheelState.hours}
-							onSelect={item => onSelectHours(item)}
-						/>
-						<WheelPicker
-							style={{flex: 1}}
-							selectedItemTextColor="#ff7800"
-							selectedItemTextSize={24}
-							data={wheelState.textHours}
-						/>
-						<TimeWheel
-							select={selectedMinutes}
-							data={wheelState.minutes}
-							onSelect={item => onSelectMinutes(item)}
-						/>
-						<WheelPicker
-							style={{flex: 1}}
-							selectedItemTextColor="#ff7800"
-							selectedItemTextSize={24}
-							data={wheelState.textMinutes}
-						/>
-						<TimeWheel
-							select={selectedSeconds}
-							data={wheelState.seconds}
-							onSelect={item => onSelectSeconds(item)}
-						/>
-						<WheelPicker
-							style={{flex: 1}}
-							selectedItemTextColor="#ff7800"
-							selectedItemTextSize={24}
-							data={wheelState.textSeconds}
-						/>
-					</View>
+					<TimePicker
+						selectedHours={selectedHours}
+						onSelectHours={onSelectHours}
+						selectedMinutes={selectedMinutes}
+						onSelectMinutes={onSelectMinutes}
+						selectedSeconds={selectedSeconds}
+						onSelectSeconds={onSelectSeconds}
+					/>
 					<View style={styles.listView}>
 						<Text>Hi</Text>
 					</View>
 				</View>
 			)}
-			<View style={styles.controlView}>
-				<View style={styles.buttonView}>
-					<TouchableOpacity
-						onPress={onStartOrCancel}
-						style={[styles.button, {backgroundColor: '#ff4d4d'}]}>
-						<Text>{start ? 'Cancel' : 'Start'}</Text>
-					</TouchableOpacity>
-				</View>
-				<View style={{height: 50, width: 20}} />
-				<View style={styles.buttonView}>
-					<TouchableOpacity
-						disabled={start ? false : true}
-						onPress={onPauseOrContinue}
-						style={[
-							styles.button,
-							{backgroundColor: '#0099ff', opacity: start ? 1 : 0.2},
-						]}>
-						<Text>{pause ? 'Continue' : 'Pause'}</Text>
-					</TouchableOpacity>
-				</View>
-			</View>
+			<Control
+				onStartOrCancel={onStartOrCancel}
+				onPauseOrContinue={onPauseOrContinue}
+				start={start}
+				pause={pause}
+			/>
 		</View>
 	);
 }
