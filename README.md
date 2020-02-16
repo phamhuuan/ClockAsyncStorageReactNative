@@ -17,8 +17,10 @@
       - Start
       - Stop
       - Reset
-      - +Lap - Sort result
-   2. Countdown - Count down
+      - +Lap
+			- Sort result
+   1. Countdown
+	    - Count down
 
 1. Dependencies
 
