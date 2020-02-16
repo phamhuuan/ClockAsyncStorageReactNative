@@ -2,15 +2,16 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import FontAwesome5Pro from 'react-native-vector-icons/FontAwesome5';
-import StopWatchScreen from './screens/StopWatchScreen';
+import StopWatchScreen from './screens/StopWatchScreen/StopWatchScreen';
 import AlarmScreen from './screens/AlarmScreen';
-import CountdownScreen from './screens/Countdown';
+import CountdownScreen from './screens/CountdownScreen/CountdownScreen';
 
 const Tab = createBottomTabNavigator();
 export default function App() {
 	return (
 		<NavigationContainer>
 			<Tab.Navigator
+				initialRouteName="Hẹn giờ"
 				screenOptions={({route}) => ({
 					tabBarIcon: ({focused}) => {
 						switch (route.name) {

@@ -19,7 +19,7 @@ export default function StopWatch() {
 	const [totalTime, setTotalTime] = useState(null);
 	useEffect(() => {
 		async function getIsStart() {
-			let tmpIsStart = await storage.get('is-start');
+			let tmpIsStart = await storage.get('is-start-stopwatch');
 			tmpIsStart =
 				tmpIsStart === null || tmpIsStart === 'NaN'
 					? false
@@ -32,7 +32,7 @@ export default function StopWatch() {
 	}, []);
 	useEffect(() => {
 		async function getReset() {
-			let tmpReset = await storage.get('reset');
+			let tmpReset = await storage.get('reset-stopwatch');
 			tmpReset =
 				tmpReset === null || tmpReset === 'NaN'
 					? true
@@ -45,7 +45,7 @@ export default function StopWatch() {
 	}, []);
 	useEffect(() => {
 		async function getLap() {
-			let tmpLap = await storage.get('lap');
+			let tmpLap = await storage.get('lap-stopwatch');
 			tmpLap = tmpLap === null || tmpLap === 'NaN' ? [] : JSON.parse(tmpLap);
 			setLap(tmpLap);
 		}
@@ -53,7 +53,7 @@ export default function StopWatch() {
 	}, []);
 	useEffect(() => {
 		async function getId() {
-			let tmpId = await storage.get('id');
+			let tmpId = await storage.get('id-stopwatch');
 			tmpId = tmpId === null || tmpId === 'NaN' ? 0 : parseInt(tmpId, 10);
 			setId(tmpId);
 		}
@@ -61,7 +61,7 @@ export default function StopWatch() {
 	}, []);
 	useEffect(() => {
 		async function getButtonName() {
-			let tmpButtonName = await storage.get('button-name');
+			let tmpButtonName = await storage.get('button-name-stopwatch');
 			tmpButtonName =
 				tmpButtonName === null || tmpButtonName === 'NaN'
 					? 'Best to worst'
@@ -76,14 +76,14 @@ export default function StopWatch() {
 			interval = setInterval(() => {
 				async function getTime() {
 					if (startTime === null) {
-						let tmp = await storage.get('start-time');
-						tmp = tmp === null || tmp === 'NaN' ? 0 : parseInt(tmp, 10);
-						setStartTime(tmp);
+						setStartTime(
+							parseInt(await storage.get('start-time-stopwatch'), 10),
+						);
 					}
 					if (totalTime === null) {
-						let tmp = await storage.get('total-time');
-						tmp = tmp === null || tmp === 'NaN' ? 0 : parseInt(tmp, 10);
-						setTotalTime(tmp);
+						setTotalTime(
+							parseInt(await storage.get('total-time-stopwatch'), 10),
+						);
 					}
 					if (startTime !== 0) {
 						let now = new Date();
@@ -97,48 +97,51 @@ export default function StopWatch() {
 			}, 10);
 		} else {
 			async function getTime() {
-				let tmp = await storage.get('total-time');
-				tmp = tmp === null || tmp === 'NaN' ? 0 : parseInt(tmp, 10);
-				setTotalTime(tmp);
-				setTime(Math.round(totalTime / 10));
+				if (startTime === null) {
+					let tmp = await storage.get('total-time-stopwatch');
+					tmp = tmp === null || tmp === 'NaN' ? 0 : parseInt(tmp, 10);
+					setTotalTime(tmp);
+					setTime(Math.round(totalTime / 10));
+				}
 			}
 			getTime();
 		}
 		return () => clearInterval(interval);
-	}, [isStart, startTime, time, totalTime]);
+	}, [isStart, startTime, totalTime, time]);
 	function onStart() {
 		async function handleOnStart() {
-			setIsStart(true);
-			setReset(false);
 			let now = new Date();
 			now = now.getTime();
 			setStartTime(now);
 			now = now.toString();
-			await storage.set('start-time', now);
-			await storage.set('is-start', 'true');
-			await storage.set('reset', 'false');
+			await storage.set('start-time-stopwatch', now);
+			await storage.set('is-start-stopwatch', 'true');
+			await storage.set('reset-stopwatch', 'false');
+			setIsStart(true);
+			setReset(false);
 		}
 		handleOnStart();
 	}
 	function onStop() {
 		async function handleOnStop() {
+			setIsStart(false);
 			let now = new Date();
 			now = now.getTime();
-			let tmp = (now - startTime + totalTime).toString();
-			await storage.set('total-time', tmp);
-			await storage.set('is-start', 'false');
-			setTotalTime(now - startTime + totalTime);
-			setIsStart(false);
+			let tmp = now - startTime + totalTime;
+			setTotalTime(tmp);
+			await storage.set('total-time-stopwatch', tmp.toString());
+			await storage.set('is-start-stopwatch', 'false');
+			setTime(Math.round(tmp / 10));
 		}
 		handleOnStop();
 	}
 	function onReset() {
 		async function handleOnReset() {
-			await storage.set('start-time', '0');
-			await storage.set('total-time', '0');
-			await storage.set('is-start', 'false');
-			await storage.set('reset', 'true');
-			await storage.set('lap', JSON.stringify([]));
+			await storage.set('start-time-stopwatch', '0');
+			await storage.set('total-time-stopwatch', '0');
+			await storage.set('is-start-stopwatch', 'false');
+			await storage.set('reset-stopwatch', 'true');
+			await storage.set('lap-stopwatch', JSON.stringify([]));
 			setTotalTime(0);
 			setIsStart(false);
 			setReset(true);
@@ -150,11 +153,14 @@ export default function StopWatch() {
 	function onAddLap() {
 		async function handleOnAddLap() {
 			let tmpNow = new Date();
-			tmpNow = tmpNow.getTime().toString();
-			await storage.set('start-time', tmpNow);
-			await storage.set('total-time', '0');
+			tmpNow = tmpNow.getTime();
+			setStartTime(tmpNow);
+			setTotalTime(0);
+			tmpNow = tmpNow.toString();
+			await storage.set('start-time-stopwatch', tmpNow);
+			await storage.set('total-time-stopwatch', '0');
 			await storage.set(
-				'lap',
+				'lap-stopwatch',
 				JSON.stringify([
 					...lap,
 					{
@@ -186,7 +192,7 @@ export default function StopWatch() {
 	}
 	function onSortLap() {
 		async function handleOnSortLap() {
-			await storage.set('id', '0');
+			await storage.set('id-stopwatch', '0');
 			setId(0);
 		}
 		handleOnSortLap();
@@ -195,14 +201,14 @@ export default function StopWatch() {
 		async function handleOnSortTime() {
 			switch (buttonName) {
 				case 'Best to worst':
-					await storage.set('id', '1');
-					await storage.set('button-name', 'Worst to best');
+					await storage.set('id-stopwatch', '1');
+					await storage.set('button-name-stopwatch', 'Worst to best');
 					setId(1);
 					setButtonName('Worst to best');
 					break;
 				case 'Worst to best':
-					await storage.set('id', '2');
-					await storage.set('button-name', 'Best to worst');
+					await storage.set('id-stopwatch', '2');
+					await storage.set('button-name-stopwatch', 'Best to worst');
 					setId(2);
 					setButtonName('Best to worst');
 					break;
