@@ -11,7 +11,7 @@ export default function App() {
 	return (
 		<NavigationContainer>
 			<Tab.Navigator
-				initialRouteName="Hẹn giờ"
+				initialRouteName="Bấm giờ"
 				screenOptions={({route}) => ({
 					tabBarIcon: ({focused}) => {
 						switch (route.name) {

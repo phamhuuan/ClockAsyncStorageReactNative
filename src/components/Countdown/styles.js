@@ -14,7 +14,7 @@ const styles = {
 		fontWeight: 'bold',
 	},
 	timePicker: {
-		flex: 2,
+		flex: 1.8,
 		flexDirection: 'row',
 	},
 	countdown: {
@@ -24,7 +24,7 @@ const styles = {
 		flex: 4,
 	},
 	listView: {
-		flex: 2,
+		flex: 2.2,
 	},
 	controlView: {
 		flex: 1,

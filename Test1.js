@@ -10,7 +10,8 @@ import {
 import NotifService from './NotifService';
 import appConfig from './app.json';
 
-export default class App extends Component {
+type Props = {};
+export default class App extends Component<Props> {
 	constructor(props) {
 		super(props);
 		this.state = {
