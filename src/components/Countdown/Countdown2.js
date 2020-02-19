@@ -10,8 +10,6 @@ import ShowTime from './ShowTime';
 import {scheduleNotification, cancelNotification} from './handle';
 import ViewPager from '@react-native-community/viewpager';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useSelector, useDispatch} from 'react-redux';
-
 let dataRaw = [
 	{
 		id: 1,
@@ -111,65 +109,153 @@ let dataRaw = [
 ];
 let datas = [];
 export default function Countdown() {
+	const [selectedHours, setSelectedHours] = useState(0);
+	const [selectedMinutes, setSelectedMinutes] = useState(2);
+	const [selectedSeconds, setSelectedSeconds] = useState(0);
+	const [start, setStart] = useState(false);
+	const [pause, setPause] = useState(false);
+	const [time, setTime] = useState(0);
+	const [expectedTime, setExpectedTime] = useState(null);
 	const [selectedPage, setSelectedPage] = useState(0);
-	const selectedHours = useSelector(state => state.timeReducer.selectedHours);
-	const selectedMinutes = useSelector(
-		state => state.timeReducer.selectedMinutes,
-	);
-	const selectedSeconds = useSelector(
-		state => state.timeReducer.selectedSeconds,
-	);
-	const start = useSelector(state => state.countdownReducer.start);
-	const pause = useSelector(state => state.countdownReducer.pause);
-	const time = useSelector(state => state.countdownReducer.time);
-	const expectedTime = useSelector(
-		state => state.countdownReducer.expectedTime,
-	);
-	const dispatch = useDispatch();
 	const viewPager = useRef();
 	useEffect(() => {
 		if (selectedHours === 0 && selectedMinutes === 0 && selectedSeconds === 0) {
-			dispatch({type: 'SECONDS', value: 1});
+			setSelectedSeconds(1);
 		}
-	}, [dispatch, selectedHours, selectedMinutes, selectedSeconds]);
-	// useEffect(() => {
-	// 	dispatch({type: 'GET_STATE_COUNTDOWN'});
-	// }, [dispatch]);
+	}, [selectedHours, selectedMinutes, selectedSeconds]);
+	useEffect(() => {
+		async function getExpectedTime() {
+			let tmpExpectedTime = await storage.get('time-expected-countdown');
+			tmpExpectedTime =
+				tmpExpectedTime === null || tmpExpectedTime === 'NaN'
+					? 0
+					: JSON.parse(tmpExpectedTime);
+			let tmpTimeLeft = await storage.get('time-left-countdown');
+			let tmpNow = Math.round(new Date().getTime() / 1000);
+			if (tmpNow >= tmpExpectedTime && tmpExpectedTime !== 0) {
+				await storage.set('start-countdown', JSON.stringify(false));
+				await storage.set('pause-countdown', JSON.stringify(false));
+				setStart(false);
+				setPause(false);
+			} else if (tmpNow < tmpExpectedTime) {
+				setTime(tmpExpectedTime - tmpNow);
+				await storage.set(
+					'time-left-countdown',
+					JSON.stringify(tmpExpectedTime - tmpNow),
+				);
+				await storage.set('start-countdown', JSON.stringify(true));
+				await storage.set('pause-countdown', JSON.stringify(false));
+				setStart(true);
+				setPause(false);
+				setExpectedTime(tmpExpectedTime);
+			} else if (JSON.parse(tmpTimeLeft) > 0 && tmpExpectedTime === 0) {
+				setTime(JSON.parse(tmpTimeLeft));
+				await storage.set('start-countdown', JSON.stringify(true));
+				await storage.set('pause-countdown', JSON.stringify(true));
+				setStart(true);
+				setPause(true);
+			}
+		}
+		getExpectedTime();
+	}, []);
 	useEffect(() => {
 		let interval;
 		if (start && time >= 0 && !pause) {
 			interval = setInterval(() => {
-				dispatch({type: 'COUNTDOWN'});
+				async function getTime() {
+					if (time <= 1) {
+						setTime(0);
+						setStart(false);
+						setPause(false);
+						setExpectedTime(null);
+						await storage.remove('time-left-countdown');
+						await storage.set('start-countdown', JSON.stringify(false));
+						await storage.set('pause-countdown', JSON.stringify(false));
+						await storage.remove('time-expected-countdown');
+					} else {
+						let tmp = JSON.parse(await storage.get('time-expected-countdown'));
+						tmp = tmp - Math.round(new Date().getTime() / 1000);
+						setTime(tmp);
+					}
+				}
+				getTime();
 			}, 300);
 		}
 		return () => clearInterval(interval);
-	}, [dispatch, pause, start, time]);
+	}, [expectedTime, pause, start, time]);
 	function onSelectHours(value) {
-		dispatch({type: 'HOURS', value});
+		setSelectedHours(value);
 	}
 	function onSelectMinutes(value) {
-		dispatch({type: 'MINUTES', value});
+		setSelectedMinutes(value);
 	}
 	function onSelectSeconds(value) {
-		dispatch({type: 'SECONDS', value});
+		setSelectedSeconds(value);
 	}
 	function onStart() {
-		dispatch({
-			type: 'START_COUNTDOWN',
-			value: 3600 * selectedHours + 60 * selectedMinutes + selectedSeconds,
-		});
+		async function handleOnStart() {
+			let tmpTime =
+				3600 * selectedHours + 60 * selectedMinutes + selectedSeconds - 1;
+			let tmp = new Date().getTime();
+			let tmpNow = Math.round(tmp / 1000);
+			await storage.set(
+				'time-expected-countdown',
+				JSON.stringify(tmpNow + tmpTime),
+			);
+			await storage.set(
+				'time-countdown',
+				JSON.stringify({
+					hours: selectedHours,
+					minutes: selectedMinutes,
+					seconds: selectedSeconds,
+				}),
+			);
+			await storage.set('time-left-countdown', JSON.stringify(tmpTime));
+			await storage.set('start-countdown', JSON.stringify(true));
+			setExpectedTime(tmpNow + tmpTime);
+			setTime(tmpTime);
+			setStart(true);
+			scheduleNotification(new Date(tmp + tmpTime * 1000));
+		}
+		handleOnStart();
 	}
 	function onCancel() {
-		dispatch({type: 'CANCEL_COUNTDOWN'});
+		async function handleOnCancel() {
+			await storage.set('start-countdown', JSON.stringify(false));
+			await storage.set('pause-countdown', JSON.stringify(false));
+			await storage.remove('time-left-countdown');
+			await storage.remove('time-expected-countdown');
+			cancelNotification('0');
+			setExpectedTime(null);
+			setTime(0);
+			setStart(false);
+			setPause(false);
+		}
+		handleOnCancel();
 	}
 	function onPause() {
-		dispatch({type: 'PAUSE_COUNTDOWN'});
+		async function handleOnPause() {
+			await storage.set('time-left-countdown', JSON.stringify(time));
+			await storage.set('pause-countdown', JSON.stringify(true));
+			await storage.remove('time-expected-countdown');
+			cancelNotification('0');
+			setPause(true);
+		}
+		handleOnPause();
 	}
 	function onContinue() {
-		dispatch({
-			type: 'COUNTINUE_COUNTDOWN',
-			value: 3600 * selectedHours + 60 * selectedMinutes + selectedSeconds,
-		});
+		async function handleOnContinue() {
+			let tmpNow = Math.round(new Date().getTime() / 1000);
+			setExpectedTime(tmpNow + time);
+			await storage.set(
+				'time-expected-countdown',
+				JSON.stringify(tmpNow + time),
+			);
+			await storage.set('pause-countdown', JSON.stringify(false));
+			scheduleNotification(new Date((tmpNow + time) * 1000));
+			setPause(false);
+		}
+		handleOnContinue();
 	}
 	function onStartOrCancel() {
 		start ? onCancel() : onStart();

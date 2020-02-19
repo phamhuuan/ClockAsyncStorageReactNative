@@ -1,8 +1,16 @@
 import PushNotification from 'react-native-push-notification';
-import storage from '../../storage';
 
-export async function scheduleNotification(date) {
-	let time = JSON.parse(await storage.get('time-countdown'));
+export function handleTime(time) {
+	let seconds = time % 60;
+	let minutes = Math.floor(time / 60) % 60;
+	let hours = Math.floor(time / 3600);
+	hours = hours < 10 ? '0' + `${hours}` : `${hours}`;
+	minutes = minutes < 10 ? '0' + `${minutes}` : `${minutes}`;
+	seconds = seconds < 10 ? '0' + `${seconds}` : `${seconds}`;
+	return hours + ':' + minutes + ':' + seconds;
+}
+
+export async function scheduleNotification(date, time) {
 	PushNotification.localNotificationSchedule({
 		date: date, // in 30 secs
 
@@ -12,12 +20,7 @@ export async function scheduleNotification(date) {
 		autoCancel: true, // (optional) default: true
 		largeIcon: 'ic_launcher', // (optional) default: "ic_launcher"
 		smallIcon: 'ic_notification', // (optional) default: "ic_notification" with fallback for "ic_launcher"
-		bigText: `Đã hết ${time.hours > 0 ? time.hours + ' giờ' : ''} ${
-			time.minutes > 0 ? time.minutes + ' phút' : ''
-		} ${time.seconds > 0 ? time.seconds + ' giây' : ''} rồi`, // (optional) default: "message" prop
-		subText: `${time.hours > 0 ? time.hours + ' giờ' : ''} ${
-			time.minutes > 0 ? time.minutes + ' phút' : ''
-		} ${time.seconds > 0 ? time.seconds + ' giây' : ''}`, // (optional) default: none
+		bigText: `Đã hết ${handleTime(time)}`, // (optional) default: none
 		color: 'blue', // (optional) default: system default
 		vibrate: true, // (optional) default: true
 		vibration: 300, // vibration length in milliseconds, ignored if vibrate=false, default: 1000
@@ -39,14 +42,4 @@ export async function scheduleNotification(date) {
 
 export function cancelNotification(id) {
 	PushNotification.cancelLocalNotifications({id: id});
-}
-
-export function handleTime(time) {
-	let seconds = time % 60;
-	let minutes = Math.floor(time / 60) % 60;
-	let hours = Math.floor(time / 3600);
-	hours = hours < 10 ? '0' + `${hours}` : `${hours}`;
-	minutes = minutes < 10 ? '0' + `${minutes}` : `${minutes}`;
-	seconds = seconds < 10 ? '0' + `${seconds}` : `${seconds}`;
-	return hours + ':' + minutes + ':' + seconds;
 }

@@ -16,31 +16,11 @@ export default function StopWatch() {
 	const buttonName = useSelector(state => state.sortReducer.buttonName);
 	const dispatch = useDispatch();
 	useEffect(() => {
-		dispatch({type: 'GET_IS_START'});
-	}, [dispatch]);
-	useEffect(() => {
-		dispatch({type: 'GET_RESET'});
-	}, [dispatch]);
-	useEffect(() => {
-		dispatch({type: 'GET_LAP'});
-	}, [dispatch]);
-	useEffect(() => {
-		dispatch({type: 'GET_ID'});
-	}, [dispatch]);
-	useEffect(() => {
-		dispatch({type: 'GET_BUTTON_NAME'});
-	}, [dispatch]);
-	useEffect(() => {
 		let interval;
 		if (isStart) {
 			interval = setInterval(() => {
-				async function getTime() {
-					dispatch({type: 'GET_START_TIME'});
-					dispatch({type: 'GET_TOTAL_TIME'});
-					dispatch({type: 'TIMING'});
-				}
-				getTime();
-			}, 10);
+				dispatch({type: 'TIMING'});
+			}, 50);
 		}
 		return () => clearInterval(interval);
 	}, [dispatch, isStart]);
