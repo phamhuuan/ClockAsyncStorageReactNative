@@ -5,6 +5,7 @@ const styles = {
 	header: {
 		height: 65,
 		backgroundColor: '#eceff1',
+		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center',
 		elevation: 3,

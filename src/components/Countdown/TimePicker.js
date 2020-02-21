@@ -4,6 +4,7 @@ import {View} from 'react-native';
 import styles from './styles';
 import {WheelPicker} from 'react-native-wheel-picker-android';
 import * as wheelState from './wheelState';
+import {useSelector, useDispatch} from 'react-redux';
 
 function TimeWheel(props) {
 	const {select, data, onSelect} = props;
@@ -23,16 +24,65 @@ function TimeWheel(props) {
 }
 
 export default function TimePicker(props) {
-	const {
-		selectedHours,
-		onSelectHours,
-		selectedMinutes,
-		onSelectMinutes,
-		selectedSeconds,
-		onSelectSeconds,
-	} = props;
+	const selectedHours = useSelector(state => state.timeReducer.selectedHours);
+	const selectedMinutes = useSelector(
+		state => state.timeReducer.selectedMinutes,
+	);
+	const selectedSeconds = useSelector(
+		state => state.timeReducer.selectedSeconds,
+	);
+	const edit = useSelector(state => state.editReducer.edit);
+	const selectedItem = useSelector(
+		state => state.selectedItemReducer.selectedItem,
+	);
+	const press = useSelector(state => state.pressReducer.press);
+	const dispatch = useDispatch();
+	function onSelectHours(value) {
+		if (
+			selectedItem !== undefined &&
+			value !== Math.floor(selectedItem.time / 3600)
+		) {
+			if (press) {
+				dispatch({type: 'CLEAR_SELECT_ITEM'});
+			}
+		}
+		dispatch({type: 'HOURS', value});
+	}
+	function onSelectMinutes(value) {
+		if (
+			selectedItem !== undefined &&
+			value !==
+				(selectedItem.time -
+					3600 * Math.floor(selectedItem.time / 3600) -
+					(selectedItem.time % 60)) /
+					60
+		) {
+			if (press) {
+				dispatch({type: 'CLEAR_SELECT_ITEM'});
+			}
+		}
+		dispatch({type: 'MINUTES', value});
+	}
+	function onSelectSeconds(value) {
+		if (selectedItem !== undefined && value !== selectedItem.time % 60) {
+			if (press) {
+				dispatch({type: 'CLEAR_SELECT_ITEM'});
+			}
+		}
+		dispatch({type: 'SECONDS', value});
+	}
 	return (
-		<View style={styles.timePicker}>
+		<View style={[styles.timePicker, {opacity: edit ? 0.2 : 1}]}>
+			<View
+				style={{
+					top: 0,
+					left: 0,
+					right: 0,
+					bottom: 0,
+					position: 'absolute',
+					zIndex: edit ? 1 : -1,
+				}}
+			/>
 			<TimeWheel
 				select={selectedHours}
 				data={wheelState.hours}
