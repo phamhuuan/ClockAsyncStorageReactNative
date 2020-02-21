@@ -2,10 +2,13 @@
 import React from 'react';
 import {View, Text, FlatList} from 'react-native';
 import styles from './styles';
-import {handleColor, handleTime} from './handle';
+import {handleColor, handleTime, handleData} from './handle';
+import {useSelector} from 'react-redux';
 
-export default function ListResult(props) {
-	const {data} = props;
+export default function ListResult() {
+	const lap = useSelector(state => state.stopWatchReducer.lap);
+	const id = useSelector(state => state.sortReducer.id);
+	const data = handleData(lap, id);
 	return (
 		<View style={styles.result}>
 			<FlatList
