@@ -1,58 +1,25 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View} from 'react-native';
 import styles from './styles';
+import StartOrStop from './StartOrStop';
+import ResetOrAddLap from './ResetOrAddLap';
+import SortByLap from './SortByLap';
+import SortByResult from './SortByResult';
 
-export default function Control(props) {
-	const {
-		onStartOrStop,
-		isStart,
-		onResetOrAddLap,
-		onSortLap,
-		reset,
-		onSortTime,
-		buttonName,
-	} = props;
+export default function Control() {
 	return (
 		<View style={styles.controlView}>
 			<View style={{flexDirection: 'row'}}>
-				<View style={styles.buttonView}>
-					<TouchableOpacity
-						onPress={onStartOrStop}
-						style={[
-							styles.startButton,
-							{backgroundColor: isStart ? 'green' : 'red'},
-						]}>
-						<Text>{isStart ? 'Pause' : 'Start'}</Text>
-					</TouchableOpacity>
-				</View>
+				<StartOrStop />
 				<View style={{height: 50, width: 20}} />
-				<View style={styles.buttonView}>
-					<TouchableOpacity
-						onPress={onResetOrAddLap}
-						disabled={reset}
-						style={[styles.resetButton, {opacity: reset ? 0.2 : 1}]}>
-						<Text>{isStart ? '+Lap' : 'Reset'}</Text>
-					</TouchableOpacity>
-				</View>
+				<ResetOrAddLap />
 			</View>
 			<View style={{height: 20}} />
 			<View style={{flexDirection: 'row'}}>
-				<View style={styles.buttonView}>
-					<TouchableOpacity
-						onPress={onSortLap}
-						style={[styles.startButton, {backgroundColor: '#ff8500'}]}>
-						<Text>Sort by lap</Text>
-					</TouchableOpacity>
-				</View>
+				<SortByLap />
 				<View style={{height: 50, width: 20}} />
-				<View style={styles.buttonView}>
-					<TouchableOpacity
-						onPress={onSortTime}
-						style={[styles.resetButton, {backgroundColor: '#ff8500'}]}>
-						<Text>{buttonName}</Text>
-					</TouchableOpacity>
-				</View>
+				<SortByResult />
 			</View>
 		</View>
 	);
