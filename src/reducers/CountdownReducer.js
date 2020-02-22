@@ -1,12 +1,22 @@
 import {
 	scheduleNotification,
 	cancelNotification,
-} from '../components/Countdown/handle';
+} from '../components/Countdown/MainScreen/handle';
+
+const initNavigation = {
+	navigation: undefined,
+};
 
 const initTime = {
 	selectedHours: 0,
 	selectedMinutes: 2,
 	selectedSeconds: 0,
+};
+
+const initTimePicker = {
+	hours: 0,
+	minutes: 15,
+	seconds: 0,
 };
 
 const initSelectedItem = {
@@ -32,6 +42,47 @@ const initPress = {
 const initSelectedPage = {
 	selectedPage: 0,
 };
+
+const initData = {
+	dataRaw: [
+		{
+			id: 1,
+			time: 120,
+			name: 'Đánh răng',
+		},
+		{
+			id: 2,
+			time: 900,
+			name: 'Skin care',
+		},
+		{
+			id: 3,
+			time: 600,
+			name: 'Hấp trứng',
+		},
+		{
+			id: 4,
+			name: null,
+		},
+	],
+};
+
+const initTextInputValue = {
+	textInputValue: 'Hẹn giờ',
+};
+
+const initSelection = {
+	start: 0,
+	end: 7,
+};
+
+export function navigationReducer(state = initNavigation, action) {
+	switch (action.type) {
+		case 'NAVIGATION':
+			return {...state, navigation: action.value};
+	}
+	return state;
+}
 
 export function timeReducer(state = initTime, action) {
 	switch (action.type) {
@@ -118,6 +169,78 @@ export function selectedPageReducer(state = initSelectedPage, action) {
 	switch (action.type) {
 		case 'SELECT_PAGE':
 			return {...state, selectedPage: action.value};
+	}
+	return state;
+}
+
+export function dataReducer(state = initData, action) {
+	let length, data;
+	switch (action.type) {
+		case 'ADD_ITEM':
+			length = state.dataRaw.length;
+			state.dataRaw[length - 1] = {
+				id: action.id,
+				name: action.name,
+				time: action.time,
+			};
+			state.dataRaw[length] = {
+				id: length + 1,
+				name: null,
+			};
+			return {...state, dataRaw: state.dataRaw};
+		case 'DELETE_ITEM':
+			data = state.dataRaw.filter(dataRaw => dataRaw.id !== action.item.id);
+			let id = 1;
+			data = data.map(tmpdata => {
+				tmpdata.id = id++;
+				return tmpdata;
+			});
+			return {...state, dataRaw: data};
+		case 'EDIT_ITEM':
+			data = state.dataRaw.map(tmpdata => {
+				if (tmpdata.id === action.id) {
+					tmpdata.name = action.name;
+					tmpdata.time = action.time;
+				}
+				return tmpdata;
+			});
+			return {...state, dataRaw: data};
+	}
+	return state;
+}
+
+export function textInputReducer(state = initTextInputValue, action) {
+	switch (action.type) {
+		case 'TYPING':
+			return {...state, textInputValue: action.text};
+		case 'CLEAR_TEXT_INPUT':
+			return initTextInputValue;
+		case 'SET_TEXT':
+			return {...state, textInputValue: action.value};
+	}
+	return state;
+}
+
+export function selectionReducer(state = initSelection, action) {
+	switch (action.type) {
+		case 'SET_SELECTION':
+			return {...state, start: action.start, end: action.end};
+		case 'RESET_SELECTION':
+			return initSelection;
+	}
+	return state;
+}
+
+export function addCountdownReducer(state = initTimePicker, action) {
+	switch (action.type) {
+		case 'ADD_HOURS':
+			return {...state, hours: action.value};
+		case 'ADD_MINUTES':
+			return {...state, minutes: action.value};
+		case 'ADD_SECONDS':
+			return {...state, seconds: action.value};
+		case 'RESET_TIME_PICKER':
+			return initTimePicker;
 	}
 	return state;
 }
