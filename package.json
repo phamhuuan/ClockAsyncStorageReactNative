@@ -1,6 +1,6 @@
 {
   "name": "Clock",
-  "version": "20.02.12",
+  "version": "20.02.23",
   "private": true,
   "scripts": {
     "android": "npx react-native run-android",
