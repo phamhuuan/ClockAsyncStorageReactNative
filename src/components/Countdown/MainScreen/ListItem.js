@@ -16,6 +16,7 @@ function ListItemEdit(props) {
 		<View style={{flex: 1, opacity: edit ? 1 : 0}}>
 			<View style={{flex: 1}}>
 				<TouchableOpacity
+					disabled={edit ? false : true}
 					onPress={() => dispatch({type: 'DELETE_ITEM', item})}
 					style={{
 						height: 20,
@@ -31,6 +32,7 @@ function ListItemEdit(props) {
 			</View>
 			<View style={{flex: 2, justifyContent: 'center', alignItems: 'center'}}>
 				<TouchableOpacity
+					disabled={edit ? false : true}
 					onPress={() => navigation.push('Sửa bộ hẹn giờ', {item})}
 					style={{
 						height: 36,
