@@ -1,6 +1,8 @@
 import React from 'react';
-import Countdown from '../../components/Countdown/Countdown';
 import {createStackNavigator} from '@react-navigation/stack';
+import MainScreen from './MainScreen';
+import AddScreen from './AddScreen';
+import EditScreen from './EditScreen';
 
 const Stack = createStackNavigator();
 
@@ -9,19 +11,19 @@ export default function CountdownScreen() {
 		<Stack.Navigator>
 			<Stack.Screen
 				name="Hẹn giờ"
-				component={Countdown}
+				component={MainScreen}
 				options={{headerShown: false}}
 			/>
-			{/* <Stack.Screen
-				name="Hẹn giờ"
-				component={Countdown}
+			<Stack.Screen
+				name="Thêm bộ hẹn giờ"
+				component={AddScreen}
 				options={{headerShown: false}}
-			/> */}
-			{/* <Stack.Screen
-				name="Hẹn giờ"
-				component={Countdown}
+			/>
+			<Stack.Screen
+				name="Sửa bộ hẹn giờ"
+				component={EditScreen}
 				options={{headerShown: false}}
-			/> */}
+			/>
 		</Stack.Navigator>
 	);
 }
