@@ -3,7 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import FontAwesome5Pro from 'react-native-vector-icons/FontAwesome5';
 import StopWatchScreen from './screens/StopWatchScreen/StopWatchScreen';
-import AlarmScreen from './screens/AlarmScreen';
+import AlarmScreen from './screens/AlarmScreen/AlarmScreen';
 import CountdownScreen from './screens/CountdownScreen/CountdownScreen';
 
 const Tab = createBottomTabNavigator();
@@ -11,7 +11,7 @@ export default function App() {
 	return (
 		<NavigationContainer>
 			<Tab.Navigator
-				initialRouteName="Hẹn giờ"
+				initialRouteName="Báo thức"
 				screenOptions={({route}) => ({
 					tabBarIcon: ({focused}) => {
 						switch (route.name) {
@@ -50,8 +50,8 @@ export default function App() {
 						backgroundColor: 'white',
 					},
 				}}>
-				<Tab.Screen name="Bấm giờ" component={StopWatchScreen} />
 				<Tab.Screen name="Báo thức" component={AlarmScreen} />
+				<Tab.Screen name="Bấm giờ" component={StopWatchScreen} />
 				<Tab.Screen name="Hẹn giờ" component={CountdownScreen} />
 			</Tab.Navigator>
 		</NavigationContainer>
