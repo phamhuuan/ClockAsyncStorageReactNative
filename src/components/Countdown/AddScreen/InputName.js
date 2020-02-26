@@ -23,7 +23,7 @@ export default function InputName() {
 						start: text.length,
 						end: text.length,
 					});
-					dispatch({type: 'TYPING', text: text});
+					dispatch({type: 'SET_TEXT', value: text});
 				}}
 				selection={{start, end}}
 				caretHidden={true}

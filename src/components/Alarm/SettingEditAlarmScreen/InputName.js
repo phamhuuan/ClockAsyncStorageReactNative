@@ -1,43 +1,44 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect} from 'react';
 import {View, TextInput} from 'react-native';
 import styles from './styles';
-import {useDispatch, useSelector} from 'react-redux';
-import {useRoute} from '@react-navigation/native';
-
+import {useSelector, useDispatch} from 'react-redux';
 export default function InputName() {
-	const route = useRoute();
 	const dispatch = useDispatch();
-	useEffect(() => {
-		dispatch({type: 'SET_TEXT', value: route.params.item.name});
-		dispatch({
-			type: 'SET_SELECTION',
-			start: 0,
-			end: route.params.item.name.length,
-		});
-	}, [dispatch, route.params.item.name]);
 	const textInputValue = useSelector(
 		state => state.textInputReducer.textInputValue,
 	);
 	const start = useSelector(state => state.selectionReducer.start);
 	const end = useSelector(state => state.selectionReducer.end);
+	const name = useSelector(state => state.editAlarmReducer.name);
+	useEffect(() => {
+		dispatch({type: 'SET_TEXT', value: name});
+		dispatch({
+			type: 'SET_SELECTION',
+			start: 0,
+			end: name.length,
+		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [dispatch]);
 	return (
-		<View style={styles.textInputView}>
+		<View style={{flex: 1, alignItems: 'center'}}>
 			<TextInput
 				style={styles.textInput}
 				autoFocus={true}
 				maxLength={25}
 				value={textInputValue}
 				onChangeText={text => {
-					dispatch({type: 'SET_TEXT', value: text});
 					dispatch({
 						type: 'SET_SELECTION',
 						start: text.length,
 						end: text.length,
 					});
+					dispatch({type: 'ALARM_NAME_EDIT', value: text});
+					dispatch({type: 'SET_TEXT', value: text});
 				}}
 				selection={{start, end}}
 				caretHidden={true}
-				placeholder="Nhập tên báo thức"
+				placeholder="Nhập tên bộ hẹn giờ"
 			/>
 		</View>
 	);

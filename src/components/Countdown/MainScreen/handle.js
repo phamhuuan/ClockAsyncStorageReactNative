@@ -10,7 +10,7 @@ export function handleTime(time) {
 	return hours + ':' + minutes + ':' + seconds;
 }
 
-export async function scheduleNotification(date, time) {
+export function scheduleNotification(date, time) {
 	PushNotification.localNotificationSchedule({
 		date: date, // in 30 secs
 

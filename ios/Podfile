@@ -34,6 +34,8 @@ target 'Clock' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+  pod 'RNAlarm', :path => '../node_modules/react-native-alarm'
+
   target 'ClockTests' do
     inherit! :search_paths
     # Pods for testing

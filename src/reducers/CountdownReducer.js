@@ -111,7 +111,13 @@ export function countdownReducer(state = initCountdownState, action) {
 			};
 		case 'CANCEL_COUNTDOWN':
 			cancelNotification('0');
-			return initCountdownState;
+			return {
+				...state,
+				start: false,
+				pause: false,
+				time: 0,
+				expectedTime: null,
+			};
 		case 'PAUSE_COUNTDOWN':
 			cancelNotification('0');
 			return {...state, pause: true};
@@ -124,7 +130,13 @@ export function countdownReducer(state = initCountdownState, action) {
 			return {...state, pause: false, expectedTime: tmpNow + state.time};
 		case 'COUNTDOWN':
 			if (state.time <= 1) {
-				return initCountdownState;
+				return {
+					...state,
+					start: false,
+					pause: false,
+					time: 0,
+					expectedTime: null,
+				};
 			} else {
 				tmp = state.expectedTime - Math.round(new Date().getTime() / 1000);
 				return {...state, time: tmp};
@@ -211,10 +223,8 @@ export function dataReducer(state = initData, action) {
 
 export function textInputReducer(state = initTextInputValue, action) {
 	switch (action.type) {
-		case 'TYPING':
-			return {...state, textInputValue: action.text};
 		case 'CLEAR_TEXT_INPUT':
-			return initTextInputValue;
+			return {...state, textInputValue: 'Hẹn giờ'};
 		case 'SET_TEXT':
 			return {...state, textInputValue: action.value};
 	}
@@ -226,7 +236,7 @@ export function selectionReducer(state = initSelection, action) {
 		case 'SET_SELECTION':
 			return {...state, start: action.start, end: action.end};
 		case 'RESET_SELECTION':
-			return initSelection;
+			return {...state, start: 0, end: 7};
 	}
 	return state;
 }
@@ -240,7 +250,7 @@ export function addCountdownReducer(state = initTimePicker, action) {
 		case 'ADD_SECONDS':
 			return {...state, seconds: action.value};
 		case 'RESET_TIME_PICKER':
-			return initTimePicker;
+			return {...state, hours: 0, minutes: 15, seconds: 0};
 	}
 	return state;
 }
