@@ -11,6 +11,7 @@ export default function Alarm() {
 	const data = useSelector(state => state.alarmReducer.data);
 	const dispatch = useDispatch();
 	useEffect(() => {
+		// hanle su kien bam nut tat tren thong bao
 		PushNotification.registerNotificationActions(['Tắt']);
 		DeviceEventEmitter.addListener('notificationActionReceived', function(
 			action,

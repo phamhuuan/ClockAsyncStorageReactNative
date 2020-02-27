@@ -15,6 +15,8 @@ export default function Header() {
 	const minute = useSelector(state => state.addAlarmReducer.minute);
 	const isOn = useSelector(state => state.addAlarmReducer.isOn);
 	const soundPath = useSelector(state => state.addAlarmReducer.soundPath);
+	const repeatTime = useSelector(state => state.editAlarmReducer.repeatTime);
+	const vibrate = useSelector(state => state.addAlarmReducer.vibrate);
 	function onAddItem() {
 		dispatch({type: 'RESET_SETTING'});
 		dispatch({
@@ -27,11 +29,15 @@ export default function Header() {
 			minute,
 			isOn,
 			soundPath,
+			repeatTime,
+			vibrate,
 		});
+		dispatch({type: 'RESET_CHOOSE'});
 		navigation.push('Báo thức');
 	}
 	function onCancel() {
 		dispatch({type: 'RESET_SETTING'});
+		dispatch({type: 'RESET_CHOOSE'});
 		navigation.push('Báo thức');
 	}
 	return (

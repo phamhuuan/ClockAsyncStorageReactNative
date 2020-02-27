@@ -12,7 +12,12 @@ import {
 	selectionReducer,
 	addCountdownReducer,
 } from './CountdownReducer';
-import {alarmReducer, addAlarmReducer, editAlarmReducer} from './AlarmReducer';
+import {
+	alarmReducer,
+	addAlarmReducer,
+	editAlarmReducer,
+	chooseSoundReducer,
+} from './AlarmReducer';
 import {createStore, combineReducers} from 'redux';
 import {persistStore, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -34,6 +39,7 @@ const rootReducer = combineReducers({
 	alarmReducer,
 	addAlarmReducer,
 	editAlarmReducer,
+	chooseSoundReducer,
 });
 
 const persistConfig = {
@@ -48,6 +54,7 @@ const persistConfig = {
 		'addCountdownReducer',
 		'addAlarmReducer',
 		'editAlarmReducer',
+		'chooseSoundReducer',
 	],
 };
 

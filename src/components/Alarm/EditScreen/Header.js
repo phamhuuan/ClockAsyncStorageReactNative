@@ -16,6 +16,8 @@ export default function Header() {
 	const minute = useSelector(state => state.editAlarmReducer.minute);
 	const isOn = useSelector(state => state.editAlarmReducer.isOn);
 	const soundPath = useSelector(state => state.editAlarmReducer.soundPath);
+	const repeatTime = useSelector(state => state.editAlarmReducer.repeatTime);
+	const vibrate = useSelector(state => state.editAlarmReducer.vibrate);
 	function onUpdate() {
 		dispatch({type: 'DELETE_ALARM', id});
 		dispatch({
@@ -28,6 +30,8 @@ export default function Header() {
 			minute,
 			isOn,
 			soundPath,
+			repeatTime,
+			vibrate,
 		});
 		navigation.push('Báo thức');
 	}

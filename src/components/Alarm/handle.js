@@ -40,7 +40,7 @@ export function handleDay(arrayDay) {
 	return tmp;
 }
 
-function scheduleNotification(date, id, soundPath, repeatType) {
+function scheduleNotification(date, id, soundPath, repeatType, vibrate) {
 	PushNotification.localNotificationSchedule({
 		date: date,
 		id: id,
@@ -50,8 +50,8 @@ function scheduleNotification(date, id, soundPath, repeatType) {
 		smallIcon: 'ic_notification',
 		bigText: 'Đã đến giờ thức dậy',
 		color: 'blue',
-		vibrate: true,
-		vibration: 30000,
+		vibrate: vibrate,
+		vibration: 0,
 		tag: 'some_tag',
 		group: 'group',
 		ongoing: false,
@@ -91,18 +91,42 @@ export function setAlarm(alarm) {
 		if (alarm.repeatAlarm[i]) {
 			if (day > i) {
 				now = new Date(now.getTime() + 86400000 * (7 + i - day));
-				scheduleNotification(now, `${alarm.id}${i}`, alarm.soundPath, 'week');
+				scheduleNotification(
+					now,
+					`${alarm.id}${i}`,
+					alarm.soundPath,
+					'week',
+					alarm.vibrate,
+				);
 			} else if (day < i) {
 				now = new Date(now.getTime() + 86400000 * (day - i));
-				scheduleNotification(now, `${alarm.id}${i}`, alarm.soundPath, 'week');
+				scheduleNotification(
+					now,
+					`${alarm.id}${i}`,
+					alarm.soundPath,
+					'week',
+					alarm.vibrate,
+				);
 			} else if (hour * 60 + minute < alarm.hour * 60 + alarm.minute) {
-				scheduleNotification(now, `${alarm.id}${i}`, alarm.soundPath, 'week');
+				scheduleNotification(
+					now,
+					`${alarm.id}${i}`,
+					alarm.soundPath,
+					'week',
+					alarm.vibrate,
+				);
 			} else {
 				now = new Date(now.getTime() + 86400000 * 7);
-				scheduleNotification(now, `${alarm.id}${i}`, alarm.soundPath, 'week');
+				scheduleNotification(
+					now,
+					`${alarm.id}${i}`,
+					alarm.soundPath,
+					'week',
+					alarm.vibrate,
+				);
 			}
 			if (alarm.repeatSound) {
-				for (let j = 0; j < 5; j++) {
+				for (let j = 0; j < alarm.repeatTime * 2 - 1; j++) {
 					scheduleNotification(
 						new Date(now.getTime() + 30000 * (j + 1)),
 						`${alarm.id}0${j}`,
@@ -117,13 +141,13 @@ export function setAlarm(alarm) {
 	if (sum === 0) {
 		if (hour * 60 + minute > alarm.hour * 60 + alarm.minute) {
 			now = new Date(now.getTime() + 86400000);
-			scheduleNotification(now, alarm.id, alarm.soundPath, null);
+			scheduleNotification(now, alarm.id, alarm.soundPath, null, alarm.vibrate);
 		} else {
 			now = new Date(now.getTime());
-			scheduleNotification(now, alarm.id, alarm.soundPath, null);
+			scheduleNotification(now, alarm.id, alarm.soundPath, null, alarm.vibrate);
 		}
 		if (alarm.repeatSound) {
-			for (let j = 0; j < 5; j++) {
+			for (let j = 0; j < alarm.repeatTime * 2 - 1; j++) {
 				scheduleNotification(
 					new Date(now.getTime() + 30000 * (j + 1)),
 					`${alarm.id}0${j}`,
@@ -140,7 +164,6 @@ export function removeAlarm(alarm) {
 	for (let i = 0; i < 7; i++) {
 		if (alarm.repeatAlarm[i]) {
 			cancelNotification(`${alarm.id}${i}`);
-			console.log(`${alarm.id}${i}`);
 		}
 		sum += alarm.repeatAlarm[i];
 	}
@@ -148,7 +171,7 @@ export function removeAlarm(alarm) {
 		cancelNotification(alarm.id);
 	}
 	if (alarm.repeatSound) {
-		for (let i = 0; i < 5; i++) {
+		for (let i = 0; i < alarm.repeatTime * 2 - 1; i++) {
 			cancelNotification(`${alarm.id}0${i}`);
 		}
 	}

@@ -29,7 +29,7 @@ export function alarmReducer(state = initAlarm, action) {
 			tmp = {
 				id: Math.random()
 					.toString()
-					.substring(12),
+					.substring(13),
 				hour: action.hour,
 				minute: action.minute,
 				isOn: action.isOn,
@@ -38,6 +38,8 @@ export function alarmReducer(state = initAlarm, action) {
 				repeatSound: action.repeatSound,
 				soundName: action.soundName,
 				soundPath: action.soundPath,
+				repeatTime: action.repeatTime,
+				vibrate: action.vibrate,
 			};
 			state.data.push(tmp);
 			data = state.data.sort(
@@ -68,6 +70,8 @@ const initAddAlarm = {
 	repeatSound: false,
 	soundName: 'Alarm 1',
 	soundPath: 'alarm01.mp3',
+	repeatTime: 2,
+	vibrate: false,
 };
 
 export function addAlarmReducer(state = initAddAlarm, action) {
@@ -85,10 +89,22 @@ export function addAlarmReducer(state = initAddAlarm, action) {
 			return {...state, repeatSound: true};
 		case 'SET_UNREPEAT_SOUND':
 			return {...state, repeatSound: false};
+		case 'SET_VIBRATE':
+			return {...state, vibrate: true};
+		case 'SET_UNVIBRATE':
+			return {...state, vibrate: false};
 		case 'ADD_ALARM_HOUR':
 			return {...state, hour: action.value};
 		case 'ADD_ALARM_MINUTE':
 			return {...state, minute: action.value};
+		case 'SET_REPEAT_TIME':
+			return {...state, repeatTime: action.value};
+		case 'CHOOSE_SOUND':
+			return {
+				...state,
+				soundName: action.soundName,
+				soundPath: action.soundPath,
+			};
 		case 'RESET_SETTING':
 			return {
 				...state,
@@ -101,6 +117,8 @@ export function addAlarmReducer(state = initAddAlarm, action) {
 				repeatSound: false,
 				soundName: 'Alarm 1',
 				soundPath: 'alarm01.mp3',
+				repeatTime: 2,
+				vibrate: false,
 			};
 	}
 	return state;
@@ -116,6 +134,8 @@ const initEditAlarm = {
 	repeatSound: false,
 	soundName: 'Alarm 1',
 	soundPath: 'alarm01.mp3',
+	repeatTime: 2,
+	vibrate: false,
 };
 
 export function editAlarmReducer(state = initEditAlarm, action) {
@@ -135,6 +155,16 @@ export function editAlarmReducer(state = initEditAlarm, action) {
 		case 'ALARM_NAME_EDIT':
 			state.name = action.value;
 			return {...state, name: state.name};
+		case 'EDIT_REPEAT_SOUND':
+			return {...state, repeatSound: true};
+		case 'EDIT_UNREPEAT_SOUND':
+			return {...state, repeatSound: false};
+		case 'EDIT_VIBRATE':
+			return {...state, vibrate: true};
+		case 'EDIT_UNVIBRATE':
+			return {...state, vibrate: false};
+		case 'EDIT_REPEAT_TIME':
+			return {...state, repeatTime: action.value};
 		case 'CLEAR_EDIT_ALARM':
 			return {
 				...state,
@@ -145,9 +175,63 @@ export function editAlarmReducer(state = initEditAlarm, action) {
 				name: 'Báo thức',
 				repeatAlarm: [false, false, false, false, false, false, false],
 				repeatSound: false,
-				soundName: '',
-				soundPath: '',
+				soundName: 'Alarm 01',
+				soundPath: 'alarm01.mp3',
+				repeatTime: 2,
+				vibrate: false,
 			};
+	}
+	return state;
+}
+
+const initSound = {
+	data: [
+		{
+			soundName: 'Alarm 01',
+			soundPath: 'alarm01.mp3',
+		},
+		{
+			soundName: 'Alarm 02',
+			soundPath: 'alarm02.mp3',
+		},
+		{
+			soundName: 'Alarm 03',
+			soundPath: 'alarm03.mp3',
+		},
+		{
+			soundName: 'Alarm 04',
+			soundPath: 'alarm04.mp3',
+		},
+		{
+			soundName: 'Alarm 05',
+			soundPath: 'alarm05.mp3',
+		},
+		{
+			soundName: 'Alarm 06',
+			soundPath: 'alarm06.mp3',
+		},
+		{
+			soundName: 'Alarm 07',
+			soundPath: 'alarm07.mp3',
+		},
+		{
+			soundName: 'Alarm 08',
+			soundPath: 'alarm08.mp3',
+		},
+		{
+			soundName: 'Alarm 09',
+			soundPath: 'alarm09.mp3',
+		},
+	],
+	choose: 'Alarm 01',
+};
+
+export function chooseSoundReducer(state = initSound, action) {
+	switch (action.type) {
+		case 'SET_CHOOSE':
+			return {...state, choose: action.choose};
+		case 'RESET_CHOOSE':
+			return {...state, choose: 'Alarm 01'};
 	}
 	return state;
 }

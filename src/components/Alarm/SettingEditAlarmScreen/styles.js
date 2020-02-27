@@ -1,3 +1,6 @@
+import {Dimensions} from 'react-native';
+
+const {width} = Dimensions.get('window');
 const styles = {
 	container: {
 		flex: 1,
@@ -29,6 +32,14 @@ const styles = {
 		fontSize: 20,
 		textAlign: 'center',
 		color: 'tomato',
+	},
+	itemSound: {
+		height: 50,
+		width: width - 10,
+		borderBottomWidth: 1,
+		borderRadius: 5,
+		margin: 5,
+		justifyContent: 'center',
 	},
 };
 

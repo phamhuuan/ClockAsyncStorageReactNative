@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Picker} from 'react-native';
 import styles from './styles';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {Switch} from 'react-native-switch';
@@ -14,6 +14,8 @@ export default function Setting() {
 	const repeatAlarm = useSelector(state => state.addAlarmReducer.repeatAlarm);
 	const repeatSound = useSelector(state => state.addAlarmReducer.repeatSound);
 	const soundName = useSelector(state => state.addAlarmReducer.soundName);
+	const repeatTime = useSelector(state => state.addAlarmReducer.repeatTime);
+	const vibrate = useSelector(state => state.addAlarmReducer.vibrate);
 	const dispatch = useDispatch();
 	return (
 		<View style={{flex: 3.2, borderTopWidth: 1}}>
@@ -67,6 +69,32 @@ export default function Setting() {
 					</View>
 				</View>
 			</TouchableOpacity>
+			{true === 1 ? null : (
+				<TouchableOpacity
+					onPress={() =>
+						vibrate
+							? dispatch({type: 'SET_UNVIBRATE'})
+							: dispatch({type: 'SET_VIBRATE'})
+					}>
+					<View style={styles.settingView}>
+						<View style={{flex: 4}}>
+							<Text style={styles.settingText}>Rung</Text>
+						</View>
+						<View style={{flex: 1}}>
+							<Switch
+								activeText={''}
+								inActiveText={''}
+								onValueChange={() =>
+									vibrate
+										? dispatch({type: 'SET_UNVIBRATE'})
+										: dispatch({type: 'SET_VIBRATE'})
+								}
+								value={vibrate}
+							/>
+						</View>
+					</View>
+				</TouchableOpacity>
+			)}
 			<TouchableOpacity
 				onPress={() =>
 					repeatSound
@@ -91,6 +119,29 @@ export default function Setting() {
 					</View>
 				</View>
 			</TouchableOpacity>
+			{repeatSound ? (
+				<TouchableOpacity>
+					<View style={styles.settingView}>
+						<View style={{flex: 4}}>
+							<Text style={styles.settingText}>Thời gian báo lại</Text>
+						</View>
+						<View style={{flex: 1}}>
+							<Picker
+								style={{height: 20, width: 200}}
+								selectedValue={repeatTime}
+								onValueChange={itemValue =>
+									dispatch({type: 'SET_REPEAT_TIME', value: itemValue})
+								}>
+								<Picker.Item label="2 phút" value={2} />
+								<Picker.Item label="3 phút" value={3} />
+								<Picker.Item label="5 phút" value={5} />
+								<Picker.Item label="10 phút" value={10} />
+								<Picker.Item label="15 phút" value={15} />
+							</Picker>
+						</View>
+					</View>
+				</TouchableOpacity>
+			) : null}
 		</View>
 	);
 }
