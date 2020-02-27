@@ -20,11 +20,7 @@ export default function Header() {
 					flexDirection: 'row',
 				}}>
 				<TouchableOpacity onPress={() => navigation.push('Thêm báo thức')}>
-					<Ionicons name="ios-add" size={30} color="tomato" />
-				</TouchableOpacity>
-				<View style={{width: 10}} />
-				<TouchableOpacity>
-					<Text style={{color: 'tomato', fontSize: 16}}>{'Edit'}</Text>
+					<Ionicons name="ios-add" size={40} color="tomato" />
 				</TouchableOpacity>
 			</View>
 		</View>
