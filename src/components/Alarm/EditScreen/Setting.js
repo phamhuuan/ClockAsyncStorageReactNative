@@ -16,6 +16,9 @@ export default function Setting() {
 	const soundName = useSelector(state => state.editAlarmReducer.soundName);
 	const repeatTime = useSelector(state => state.editAlarmReducer.repeatTime);
 	const vibrate = useSelector(state => state.editAlarmReducer.vibrate);
+	const red = useSelector(state => state.editColorReducer.red);
+	const green = useSelector(state => state.editColorReducer.green);
+	const blue = useSelector(state => state.editColorReducer.blue);
 	const dispatch = useDispatch();
 	return (
 		<View style={{flex: 3.2, borderTopWidth: 1}}>
@@ -119,26 +122,46 @@ export default function Setting() {
 					</View>
 				</View>
 			</TouchableOpacity>
+			{repeatSound ? (
+				<TouchableOpacity>
+					<View style={styles.settingView}>
+						<View style={{flex: 4}}>
+							<Text style={styles.settingText}>Thời gian báo lại</Text>
+						</View>
+						<View style={{flex: 1}}>
+							<Picker
+								style={{height: 20, width: 200}}
+								selectedValue={repeatTime}
+								onValueChange={itemValue =>
+									dispatch({type: 'EDIT_REPEAT_TIME', value: itemValue})
+								}>
+								<Picker.Item label="2 phút" value={2} />
+								<Picker.Item label="3 phút" value={3} />
+								<Picker.Item label="5 phút" value={5} />
+								<Picker.Item label="10 phút" value={10} />
+								<Picker.Item label="15 phút" value={15} />
+							</Picker>
+						</View>
+					</View>
+				</TouchableOpacity>
+			) : null}
 			<TouchableOpacity
-				disabled={!repeatSound}
-				style={{opacity: repeatSound ? 1 : 0}}>
+				onPress={() =>
+					navigation.push('Cài đặt sửa báo thức', {nextPage: 'color'})
+				}>
 				<View style={styles.settingView}>
 					<View style={{flex: 4}}>
-						<Text style={styles.settingText}>Thời gian báo lại</Text>
+						<Text style={styles.settingText}>Màu sắc</Text>
 					</View>
-					<View style={{flex: 1}}>
-						<Picker
-							style={{height: 20, width: 200}}
-							selectedValue={repeatTime}
-							onValueChange={itemValue =>
-								dispatch({type: 'EDIT_REPEAT_TIME', value: itemValue})
-							}>
-							<Picker.Item label="2 phút" value={2} />
-							<Picker.Item label="3 phút" value={3} />
-							<Picker.Item label="5 phút" value={5} />
-							<Picker.Item label="10 phút" value={10} />
-							<Picker.Item label="15 phút" value={15} />
-						</Picker>
+					<View
+						style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+						<View
+							style={{
+								height: 20,
+								width: 20,
+								backgroundColor: `rgb(${red}, ${green}, ${blue})`,
+							}}
+						/>
 					</View>
 				</View>
 			</TouchableOpacity>

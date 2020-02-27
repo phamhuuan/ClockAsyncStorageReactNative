@@ -17,7 +17,7 @@ export default function TimeView(props) {
 					{parse(item.hour) + ':' + parse(item.minute)}
 				</Text>
 			</View>
-			<View style={{flex: 1, paddingLeft: 90}}>
+			<View style={{flex: 1}}>
 				<Text style={{fontSize: 10}}>{`${item.name}, ${handleDay(
 					item.repeatAlarm,
 				)}`}</Text>

@@ -17,6 +17,8 @@ import {
 	addAlarmReducer,
 	editAlarmReducer,
 	chooseSoundReducer,
+	addColorReducer,
+	editColorReducer,
 } from './AlarmReducer';
 import {createStore, combineReducers} from 'redux';
 import {persistStore, persistReducer} from 'redux-persist';
@@ -40,6 +42,8 @@ const rootReducer = combineReducers({
 	addAlarmReducer,
 	editAlarmReducer,
 	chooseSoundReducer,
+	addColorReducer,
+	editColorReducer,
 });
 
 const persistConfig = {
@@ -55,6 +59,8 @@ const persistConfig = {
 		'addAlarmReducer',
 		'editAlarmReducer',
 		'chooseSoundReducer',
+		'addColorReducer',
+		'editColorReducer',
 	],
 };
 

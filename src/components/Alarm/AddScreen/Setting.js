@@ -16,6 +16,9 @@ export default function Setting() {
 	const soundName = useSelector(state => state.addAlarmReducer.soundName);
 	const repeatTime = useSelector(state => state.addAlarmReducer.repeatTime);
 	const vibrate = useSelector(state => state.addAlarmReducer.vibrate);
+	const red = useSelector(state => state.addColorReducer.red);
+	const green = useSelector(state => state.addColorReducer.green);
+	const blue = useSelector(state => state.addColorReducer.blue);
 	const dispatch = useDispatch();
 	return (
 		<View style={{flex: 3.2, borderTopWidth: 1}}>
@@ -142,6 +145,26 @@ export default function Setting() {
 					</View>
 				</TouchableOpacity>
 			) : null}
+			<TouchableOpacity
+				onPress={() =>
+					navigation.push('Cài đặt thêm báo thức', {nextPage: 'color'})
+				}>
+				<View style={styles.settingView}>
+					<View style={{flex: 4}}>
+						<Text style={styles.settingText}>Màu sắc</Text>
+					</View>
+					<View
+						style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+						<View
+							style={{
+								height: 20,
+								width: 20,
+								backgroundColor: `rgb(${red}, ${green}, ${blue})`,
+							}}
+						/>
+					</View>
+				</View>
+			</TouchableOpacity>
 		</View>
 	);
 }

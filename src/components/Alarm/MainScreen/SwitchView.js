@@ -11,6 +11,8 @@ export default function SwitchView(props) {
 			<Switch
 				activeText={''}
 				inActiveText={''}
+				backgroundActive={`rgb(${item.red},${item.green},${item.blue})`}
+				backgroundInactive={'gray'}
 				onValueChange={() =>
 					item.isOn
 						? dispatch({type: 'SET_OFF', id: item.id})

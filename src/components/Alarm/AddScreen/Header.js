@@ -15,9 +15,13 @@ export default function Header() {
 	const minute = useSelector(state => state.addAlarmReducer.minute);
 	const isOn = useSelector(state => state.addAlarmReducer.isOn);
 	const soundPath = useSelector(state => state.addAlarmReducer.soundPath);
-	const repeatTime = useSelector(state => state.editAlarmReducer.repeatTime);
+	const repeatTime = useSelector(state => state.addAlarmReducer.repeatTime);
 	const vibrate = useSelector(state => state.addAlarmReducer.vibrate);
+	const red = useSelector(state => state.addColorReducer.red);
+	const green = useSelector(state => state.addColorReducer.green);
+	const blue = useSelector(state => state.addColorReducer.blue);
 	function onAddItem() {
+		navigation.push('Báo thức');
 		dispatch({type: 'RESET_SETTING'});
 		dispatch({
 			type: 'ADD_ALARM',
@@ -31,9 +35,11 @@ export default function Header() {
 			soundPath,
 			repeatTime,
 			vibrate,
+			red,
+			green,
+			blue,
 		});
 		dispatch({type: 'RESET_CHOOSE'});
-		navigation.push('Báo thức');
 	}
 	function onCancel() {
 		dispatch({type: 'RESET_SETTING'});

@@ -1,6 +1,6 @@
 import {Dimensions} from 'react-native';
 
-const {height, width} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 const styles = {
 	container: {
 		flex: 1,
@@ -38,12 +38,20 @@ const styles = {
 	timeView: {
 		flex: 2,
 		justifyContent: 'flex-end',
-		paddingLeft: 90,
 	},
 	switchView: {
-		flex: 1.5,
+		flex: 1.8,
 		justifyContent: 'center',
 		alignItems: 'center',
+	},
+	layer: {
+		position: 'absolute',
+		justifyContent: 'center',
+		alignItems: 'center',
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
 	},
 };
 

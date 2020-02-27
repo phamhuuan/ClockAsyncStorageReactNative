@@ -18,7 +18,11 @@ export default function Header() {
 	const soundPath = useSelector(state => state.editAlarmReducer.soundPath);
 	const repeatTime = useSelector(state => state.editAlarmReducer.repeatTime);
 	const vibrate = useSelector(state => state.editAlarmReducer.vibrate);
+	const red = useSelector(state => state.editColorReducer.red);
+	const green = useSelector(state => state.editColorReducer.green);
+	const blue = useSelector(state => state.editColorReducer.blue);
 	function onUpdate() {
+		navigation.push('Báo thức');
 		dispatch({type: 'DELETE_ALARM', id});
 		dispatch({
 			type: 'ADD_ALARM',
@@ -32,8 +36,10 @@ export default function Header() {
 			soundPath,
 			repeatTime,
 			vibrate,
+			red,
+			green,
+			blue,
 		});
-		navigation.push('Báo thức');
 	}
 	function onCancel() {
 		navigation.push('Báo thức');

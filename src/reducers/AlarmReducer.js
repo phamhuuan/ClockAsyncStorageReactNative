@@ -40,6 +40,9 @@ export function alarmReducer(state = initAlarm, action) {
 				soundPath: action.soundPath,
 				repeatTime: action.repeatTime,
 				vibrate: action.vibrate,
+				red: action.red,
+				green: action.green,
+				blue: action.blue,
 			};
 			state.data.push(tmp);
 			data = state.data.sort(
@@ -124,6 +127,26 @@ export function addAlarmReducer(state = initAddAlarm, action) {
 	return state;
 }
 
+const initAddColor = {
+	red: 0,
+	green: 255,
+	blue: 0,
+};
+
+export function addColorReducer(state = initAddColor, action) {
+	switch (action.type) {
+		case 'SET_RED':
+			return {...state, red: action.value};
+		case 'SET_GREEN':
+			return {...state, green: action.value};
+		case 'SET_BLUE':
+			return {...state, blue: action.value};
+		case 'RESET_ADD_COLOR':
+			return {...state, red: 0, green: 255, blue: 0};
+	}
+	return state;
+}
+
 const initEditAlarm = {
 	id: 1,
 	hour: 0,
@@ -180,6 +203,33 @@ export function editAlarmReducer(state = initEditAlarm, action) {
 				repeatTime: 2,
 				vibrate: false,
 			};
+	}
+	return state;
+}
+
+const initEditColor = {
+	red: 0,
+	green: 255,
+	blue: 0,
+};
+
+export function editColorReducer(state = initEditColor, action) {
+	switch (action.type) {
+		case 'SET_COLOR_INFO':
+			return {
+				...state,
+				red: action.item.red,
+				green: action.item.green,
+				blue: action.item.blue,
+			};
+		case 'EDIT_RED':
+			return {...state, red: action.value};
+		case 'EDIT_GREEN':
+			return {...state, green: action.value};
+		case 'EDIT_BLUE':
+			return {...state, blue: action.value};
+		case 'RESET_EDIT_COLOR':
+			return {...state, red: 0, green: 255, blue: 0};
 	}
 	return state;
 }
