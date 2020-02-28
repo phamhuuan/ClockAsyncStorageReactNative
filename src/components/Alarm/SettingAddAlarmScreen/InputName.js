@@ -16,7 +16,7 @@ export default function InputName() {
 		dispatch({
 			type: 'SET_SELECTION',
 			start: 0,
-			end: textInputValue.length,
+			end: 'Báo thức'.length,
 		});
 	}, []);
 	return (

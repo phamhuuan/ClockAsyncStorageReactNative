@@ -72,7 +72,7 @@ export default function Setting() {
 					</View>
 				</View>
 			</TouchableOpacity>
-			{true === 1 ? null : (
+			{1 + 0 === 1 ? null : (
 				<TouchableOpacity
 					onPress={() =>
 						vibrate
